@@ -184,6 +184,12 @@
   .field input, .field select, .field textarea { width: 100%; }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+  .who-list { display: flex; flex-wrap: wrap; gap: 7px; }
+  .who-check { display: flex; align-items: center; gap: 7px; background: var(--bg-soft); border: 1px solid var(--line);
+               padding: 7px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; transition: .15s; }
+  .who-check:hover { border-color: var(--accent); }
+  .who-check input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+  .who-check.checked { background: rgba(124,92,255,.12); border-color: var(--accent); color: var(--accent); }
 
   .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--card);
            border: 1px solid var(--line); padding: 13px 20px; border-radius: 14px; box-shadow: var(--shadow);
@@ -342,10 +348,8 @@
       <div class="field"><label>Category</label><select id="tCat"><option value="work">💼 Professional</option><option value="personal">🏠 Personal</option></select></div>
       <div class="field"><label>Priority</label><select id="tPrio"><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select></div>
     </div>
-    <div class="row2">
-      <div class="field"><label>Assignee</label><select id="tWho"></select></div>
-      <div class="field"><label>Due date</label><input type="date" id="tDue"></div>
-    </div>
+    <div class="field"><label>Assignees</label><div id="tWhoList" class="who-list"></div></div>
+    <div class="field"><label>Due date</label><input type="date" id="tDue" style="width:100%"></div>
     <div class="row2">
       <div class="field"><label>Progress: <span id="tProgVal">0</span>%</label><input type="range" id="tProg" min="0" max="100" value="0"></div>
       <div class="field"><label>Plan for today?</label><select id="tToday"><option value="no">No</option><option value="yes">Yes</option></select></div>
@@ -487,6 +491,8 @@ function load() {
     if (d) state = Object.assign(state, d);
   } catch (e) {}
   if (!state.team.length && !state.tasks.length) seed();
+  // migrate old string who → array
+  state.tasks.forEach(t => { if (typeof t.who === "string") t.who = [t.who]; });
 }
 function save() {
   localStorage.setItem(LS, JSON.stringify(state));
@@ -503,10 +509,10 @@ function seed() {
   state.team = [a, b];
   const t = todayStr();
   state.tasks = [
-    { id: uid(), title: "Review the sprint plan", cat: "work", prio: "high", who: "me", due: t, prog: 40, status: "open", today: true, createdAt: Date.now() },
-    { id: uid(), title: "Gym session", cat: "personal", prio: "med", who: "me", due: t, prog: 0, status: "open", today: true, createdAt: Date.now() },
-    { id: uid(), title: "Ship payments API", cat: "work", prio: "high", who: a.id, due: t, prog: 70, status: "open", today: false, createdAt: Date.now() },
-    { id: uid(), title: "Onboarding redesign", cat: "work", prio: "med", who: b.id, due: addDays(t, 2), prog: 30, status: "open", today: false, createdAt: Date.now() },
+    { id: uid(), title: "Review the sprint plan", cat: "work", prio: "high", who: ["me"], due: t, prog: 40, status: "open", today: true, createdAt: Date.now() },
+    { id: uid(), title: "Gym session", cat: "personal", prio: "med", who: ["me"], due: t, prog: 0, status: "open", today: true, createdAt: Date.now() },
+    { id: uid(), title: "Ship payments API", cat: "work", prio: "high", who: [a.id], due: t, prog: 70, status: "open", today: false, createdAt: Date.now() },
+    { id: uid(), title: "Onboarding redesign", cat: "work", prio: "med", who: [b.id], due: addDays(t, 2), prog: 30, status: "open", today: false, createdAt: Date.now() },
   ];
 }
 
@@ -536,18 +542,20 @@ function touchStreak() {
 }
 
 /* ---------- lookups ---------- */
-function whoName(who) {
-  if (who === "me") return "Me";
-  const m = state.team.find(x => x.id === who);
+function whoName(id) {
+  if (id === "me") return "Me";
+  const m = state.team.find(x => x.id === id);
   return m ? m.name.split(" ")[0] : "—";
 }
+function toArr(who) { return Array.isArray(who) ? who : (who ? [who] : ["me"]); }
+function whoNames(who) { return toArr(who).map(whoName).join(", "); }
 
 /* ---------- task ops ---------- */
 function quickAdd() {
   const title = qaTitle.value.trim();
   if (!title) return;
   state.tasks.push({
-    id: uid(), title, cat: qaCat.value, prio: qaPrio.value, who: qaWho.value,
+    id: uid(), title, cat: qaCat.value, prio: qaPrio.value, who: [qaWho.value],
     due: todayStr(), prog: 0, status: "open", today: true, createdAt: Date.now(),
   });
   qaTitle.value = "";
@@ -578,7 +586,7 @@ function openTaskModal(task) {
   tNotes.value = task ? (task.notes || "") : "";
   tCat.value = task ? task.cat : "work";
   tPrio.value = task ? task.prio : "med";
-  fillWhoSelect(tWho, task ? task.who : "me");
+  fillWhoCheckboxes(task ? toArr(task.who) : ["me"]);
   tDue.value = task ? (task.due || "") : todayStr();
   tProg.value = task ? task.prog : 0; tProgVal.textContent = tProg.value;
   tToday.value = task ? (task.today ? "yes" : "no") : "yes";
@@ -587,8 +595,10 @@ function openTaskModal(task) {
 function saveTask() {
   const title = tTitle.value.trim();
   if (!title) { toast("✏️", "Give the task a name"); return; }
+  const who = Array.from(tWhoList.querySelectorAll("input:checked")).map(x => x.value);
+  if (!who.length) { toast("✏️", "Select at least one assignee"); return; }
   const data = {
-    title, notes: tNotes.value.trim(), cat: tCat.value, prio: tPrio.value, who: tWho.value,
+    title, notes: tNotes.value.trim(), cat: tCat.value, prio: tPrio.value, who,
     due: tDue.value || null, prog: +tProg.value, today: tToday.value === "yes",
   };
   if (tEditId.value) {
@@ -628,13 +638,16 @@ function saveMember() {
 function delMember(id) {
   if (!confirm("Remove this member? Their tasks will be reassigned to you.")) return;
   state.team = state.team.filter(x => x.id !== id);
-  state.tasks.forEach(t => { if (t.who === id) t.who = "me"; });
+  state.tasks.forEach(t => {
+    t.who = toArr(t.who).filter(w => w !== id);
+    if (!t.who.length) t.who = ["me"];
+  });
   save(); renderAll();
 }
 
 /* ---------- efficiency ---------- */
 function memberStats(id) {
-  const ts = state.tasks.filter(t => t.who === id);
+  const ts = state.tasks.filter(t => toArr(t.who).includes(id));
   const done = ts.filter(t => t.status === "done");
   const open = ts.filter(t => t.status !== "done");
   const total = ts.length;
@@ -652,7 +665,7 @@ function taskRow(t) {
   const dl = dueLabel(t.due);
   const overdue = dl && dl.over && t.status !== "done";
   const prioTag = `<span class="tag p-${t.prio === "high" ? "high" : t.prio === "low" ? "low" : "med"}">${t.prio === "high" ? "High" : t.prio === "low" ? "Low" : "Med"}</span>`;
-  const whoTag = t.who !== "me" ? `<span class="tag who">@${esc(whoName(t.who))}</span>` : "";
+  const whoTag = toArr(t.who).filter(id => id !== "me").map(id => `<span class="tag who">@${esc(whoName(id))}</span>`).join("");
   const dueTag = dl ? `<span class="tag ${overdue ? "overdue" : ""}">${dl.txt}</span>` : "";
   const progTag = (t.status !== "done" && t.prog > 0) ? `<span class="tag">${t.prog}%</span>` : "";
   return `<div class="task ${t.status === "done" ? "done" : ""}">
@@ -689,7 +702,7 @@ function renderTasks() {
   if (filterCat !== "all") list = list.filter(t => t.cat === filterCat);
   if (filterStatus === "open") list = list.filter(t => t.status !== "done");
   if (filterStatus === "done") list = list.filter(t => t.status === "done");
-  if (filterWho !== "all") list = list.filter(t => t.who === filterWho);
+  if (filterWho !== "all") list = list.filter(t => toArr(t.who).includes(filterWho));
   list.sort((a, b) => (a.status === "done") - (b.status === "done") || (a.due || "9999").localeCompare(b.due || "9999"));
   taskList.innerHTML = list.length
     ? `<div class="col">${list.map(taskRow).join("")}</div>`
@@ -760,6 +773,18 @@ function fillWhoSelect(sel, val) {
   sel.innerHTML = `<option value="me">Me</option>` + state.team.map(m => `<option value="${m.id}">${esc(m.name)}</option>`).join("");
   if (val) sel.value = val;
 }
+function fillWhoCheckboxes(selectedIds) {
+  const people = [{ id: "me", name: "Me" }, ...state.team.map(m => ({ id: m.id, name: m.name.split(" ")[0] }))];
+  tWhoList.innerHTML = people.map(p => {
+    const checked = selectedIds.includes(p.id);
+    return `<label class="who-check ${checked ? "checked" : ""}">
+      <input type="checkbox" value="${p.id}" ${checked ? "checked" : ""}> ${esc(p.name)}
+    </label>`;
+  }).join("");
+  tWhoList.querySelectorAll("input").forEach(cb => cb.addEventListener("change", () => {
+    cb.closest(".who-check").classList.toggle("checked", cb.checked);
+  }));
+}
 function fillAllSelects() {
   fillWhoSelect(qaWho, qaWho.value || "me");
   segWho.innerHTML = `<option value="all">Anyone</option><option value="me">Me</option>` + state.team.map(m => `<option value="${m.id}">${esc(m.name)}</option>`).join("");
@@ -773,7 +798,7 @@ window.delTask = delTask;
 window.editTaskById = id => openTaskModal(state.tasks.find(t => t.id === id));
 window.editMember = id => openMemberModal(state.team.find(m => m.id === id));
 window.delMember = delMember;
-window.assignTo = id => { openTaskModal(null); tWho.value = id; tCat.value = "work"; };
+window.assignTo = id => { openTaskModal(null); tCat.value = "work"; tWhoList.querySelectorAll("input").forEach(cb => { cb.checked = cb.value === id; cb.closest(".who-check").classList.toggle("checked", cb.checked); }); };
 
 /* ---------- render all ---------- */
 function renderAll() {

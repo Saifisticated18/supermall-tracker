@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projects Tracker — Supermall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ─── Base tokens (Cozy Brew default) ─── */
 :root {
@@ -98,6 +101,160 @@ body[data-ui="volt"] {
   --stat2-bg: #001e1a; --stat2-c: #00e8c8;
   --stat3-bg: #1a0030; --stat3-c: #cc6bff;
   --stat4-bg: #2a0000; --stat4-c: #ff6b6b;
+}
+
+/* ─── Tasky ─── */
+body[data-ui="tasky"] {
+  --bg:         #e9f6f0;
+  --bg-soft:    #f2faf7;
+  --card:       #ffffff;
+  --card-hover: #f4fbf8;
+  --line:       rgba(22,64,58,.22);
+  --text:       #16403a;
+  --muted:      rgba(22,64,58,.58);
+  --accent:     #12b394;
+  --accent-2:   #ff9166;
+  --accent-3:   #ffd166;
+  --green:      #12b394;
+  --yellow:     #ffd166;
+  --red:        #ff9166;
+  --blue:       #2f8fdc;
+  --shadow-sm:  3px 3px 0 rgba(22,64,58,.16);
+  --shadow:     4px 4px 0 rgba(22,64,58,.2);
+  --shadow-lg:  5px 5px 0 rgba(22,64,58,.22);
+  --radius:     16px;
+  --radius-sm:  11px;
+  --stat1-bg:   #e6eff1; --stat1-c: #16403a;
+  --stat2-bg:   #dcecf6; --stat2-c: #173a55;
+  --stat3-bg:   #d8efe2; --stat3-c: #12b394;
+  --stat4-bg:   #fff3eb; --stat4-c: #d4622a;
+}
+/* Fredoka headings in Tasky */
+body[data-ui="tasky"] h1,
+body[data-ui="tasky"] h2,
+body[data-ui="tasky"] h3,
+body[data-ui="tasky"] .tab,
+body[data-ui="tasky"] .stat .big,
+body[data-ui="tasky"] .btn,
+body[data-ui="tasky"] .noon-wordmark,
+body[data-ui="tasky"] .cp-head {
+  font-family: 'Fredoka', sans-serif;
+}
+body[data-ui="tasky"] {
+  font-family: 'Nunito', sans-serif;
+}
+/* Chunky sticker borders */
+body[data-ui="tasky"] .col,
+body[data-ui="tasky"] .stat,
+body[data-ui="tasky"] .member,
+body[data-ui="tasky"] .log,
+body[data-ui="tasky"] .modal,
+body[data-ui="tasky"] .quickadd,
+body[data-ui="tasky"] .cpanel {
+  border: 2.5px solid var(--text);
+}
+body[data-ui="tasky"] .tabs {
+  border: 2.5px solid rgba(22,64,58,.25);
+}
+body[data-ui="tasky"] .tab.active {
+  box-shadow: 3px 3px 0 rgba(22,64,58,.2);
+}
+body[data-ui="tasky"] .pill {
+  border: 2px solid rgba(22,64,58,.3);
+}
+body[data-ui="tasky"] .icon-btn {
+  border: 2px solid rgba(22,64,58,.25);
+}
+body[data-ui="tasky"] .noon-badge {
+  border: 2.5px solid #16403a !important;
+  box-shadow: 3px 3px 0 rgba(22,64,58,.18) !important;
+  border-radius: 14px !important;
+}
+body[data-ui="tasky"] input,
+body[data-ui="tasky"] textarea,
+body[data-ui="tasky"] select {
+  border: 2px solid rgba(22,64,58,.3);
+  border-radius: 10px;
+}
+body[data-ui="tasky"] input:focus,
+body[data-ui="tasky"] textarea:focus,
+body[data-ui="tasky"] select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(18,179,148,.14);
+}
+body[data-ui="tasky"] .check {
+  border: 2.5px solid var(--text);
+  border-radius: 6px;
+}
+body[data-ui="tasky"] .check.done {
+  background: var(--accent);
+  border-color: var(--text);
+  color: #fff;
+}
+body[data-ui="tasky"] .btn {
+  border: 2.5px solid var(--text);
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+body[data-ui="tasky"] .btn.ghost {
+  background: transparent;
+  border: 2.5px solid rgba(22,64,58,.3);
+  color: var(--text);
+}
+body[data-ui="tasky"] .seg {
+  border: 2px solid rgba(22,64,58,.2);
+}
+body[data-ui="tasky"] .seg button.active {
+  box-shadow: 2px 2px 0 rgba(22,64,58,.14);
+}
+body[data-ui="tasky"] .qa-pill {
+  border: 2px solid rgba(22,64,58,.25);
+  font-family: 'Nunito', sans-serif;
+}
+body[data-ui="tasky"] .qa-pill.sel {
+  border-color: var(--accent);
+  background: rgba(18,179,148,.12);
+  color: var(--accent);
+}
+body[data-ui="tasky"] .who-check {
+  border: 2px solid rgba(22,64,58,.25);
+}
+body[data-ui="tasky"] .who-check.checked {
+  border-color: var(--accent);
+  background: rgba(18,179,148,.1);
+  color: var(--accent);
+}
+body[data-ui="tasky"] .col-head .count {
+  border: 2px solid rgba(22,64,58,.2);
+}
+body[data-ui="tasky"] .bar { background: rgba(22,64,58,.1); }
+body[data-ui="tasky"] .toast {
+  border: 2.5px solid var(--text);
+  box-shadow: 4px 4px 0 rgba(22,64,58,.2);
+  border-radius: 14px;
+}
+body[data-ui="tasky"] .avatar { border: 2px solid var(--text); }
+body[data-ui="tasky"] .utb { border: 2.5px solid rgba(22,64,58,.25); }
+body[data-ui="tasky"] .utb.active { border-color: var(--accent); background: rgba(18,179,148,.08); }
+body[data-ui="tasky"] .swatch.active { border-color: var(--text); }
+/* Tasky streak pill style */
+body[data-ui="tasky"] .pill:has(b) {
+  background: #ff9166;
+  border-color: var(--text);
+  color: #3a1c0c;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+}
+body[data-ui="tasky"] .pill:has(b) b { color: #3a1c0c; }
+/* Sub-theme switcher strip (sky / peri variants) */
+body[data-ui="tasky"][data-tasky-sub="sky"] {
+  --bg: #e9f2fb; --bg-soft: #f0f6fd; --text: #173a55; --accent: #2f8fdc;
+  --stat3-c: #2f8fdc; --muted: rgba(23,58,85,.58); --line: rgba(23,58,85,.22);
+}
+body[data-ui="tasky"][data-tasky-sub="peri"] {
+  --bg: #efeefb; --bg-soft: #f5f4fd; --text: #2c2a58; --accent: #6d6ee2;
+  --stat3-c: #6d6ee2; --muted: rgba(44,42,88,.58); --line: rgba(44,42,88,.22);
 }
 
 /* ─── Reset ─── */
@@ -628,6 +785,8 @@ body[data-ui="candy"] .who-check.checked { background: var(--stat1-bg); }
   <div class="section-lbl">UI Style</div>
   <div class="ui-themes" id="uiThemes"></div>
 
+  <div id="taskySubs" style="display:none"></div>
+
   <div class="section-lbl">Color Presets</div>
   <div class="swatches" id="swatches"></div>
 
@@ -677,7 +836,7 @@ const AVATAR_COLORS = ["#e8722a","#1e9e6e","#d94f9e","#4c8ee8","#5ab85a","#f4bc1
 
 let state = {
   tasks: [], team: [], updates: [],
-  uiTheme: "cozy", palette: "cozy", customColors: null,
+  uiTheme: "cozy", taskySub: "mint", palette: "cozy", customColors: null,
   streak: 0, lastActive: null, mood: "🚀",
 };
 
@@ -1063,12 +1222,54 @@ const UI_THEMES = {
   mint:  { name: "Mint Grove", desc: "Fresh & calm",      grad: "linear-gradient(135deg,#1e9e6e,#84d4b0)", emoji: "🌿" },
   candy: { name: "Candy Pop",  desc: "Fun & playful",     grad: "linear-gradient(135deg,#d94f9e,#7c5cff)", emoji: "🍬" },
   volt:  { name: "Volt",       desc: "Bold & electric",   grad: "linear-gradient(135deg,#c8f400,#00e8c8)", emoji: "⚡" },
+  tasky: { name: "Tasky",      desc: "Chunky & fresh",    grad: "linear-gradient(135deg,#12b394,#2f8fdc)", emoji: "✓" },
 };
 
-function applyUITheme(key) {
+const TASKY_SUBS = [
+  { id: "mint", label: "Mint",  color: "#12b394" },
+  { id: "sky",  label: "Sky",   color: "#2f8fdc" },
+  { id: "peri", label: "Peri",  color: "#6d6ee2" },
+];
+
+function applyUITheme(key, taskySub) {
   state.uiTheme = key;
-  document.body.dataset.ui = key || "cozy";
+  if (key === "tasky") {
+    state.taskySub = taskySub || state.taskySub || "mint";
+    document.body.dataset.ui = "tasky";
+    document.body.dataset.taskySub = state.taskySub;
+  } else {
+    state.taskySub = state.taskySub || "mint";
+    document.body.dataset.ui = key || "cozy";
+    delete document.body.dataset.taskySub;
+  }
   document.querySelectorAll(".utb").forEach(b => b.classList.toggle("active", b.dataset.uiKey === key));
+  renderTaskySubPicker();
+}
+
+function renderTaskySubPicker() {
+  const wrap = document.getElementById("taskySubs");
+  if (!wrap) return;
+  if (state.uiTheme !== "tasky") { wrap.style.display = "none"; return; }
+  wrap.style.display = "block";
+  const active = state.taskySub || "mint";
+  wrap.innerHTML = `<div class="section-lbl">Tasky colour</div>
+    <div style="display:flex;gap:8px;">
+      ${TASKY_SUBS.map(s => `
+        <button data-sub="${s.id}" style="
+          flex:1;padding:9px 6px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:700;
+          background:${active===s.id ? s.color : "var(--card)"};
+          color:${active===s.id ? "#fff" : "var(--text)"};
+          border:2.5px solid ${active===s.id ? s.color : "var(--line)"};
+          transition:.15s;">${s.label}</button>
+      `).join("")}
+    </div>`;
+  wrap.querySelectorAll("button[data-sub]").forEach(btn =>
+    btn.addEventListener("click", () => {
+      applyUITheme("tasky", btn.dataset.sub);
+      localStorage.setItem(LS, JSON.stringify(state));
+      toast("🎨", `Tasky · ${btn.dataset.sub}`);
+    })
+  );
 }
 
 function buildUIThemeButtons() {
@@ -1085,6 +1286,7 @@ function buildUIThemeButtons() {
       toast("🎨", `${UI_THEMES[btn.dataset.uiKey].name} applied`);
     })
   );
+  renderTaskySubPicker();
 }
 
 /* ── Color palette system (accent overrides on top of UI theme) ── */
@@ -1221,8 +1423,8 @@ syncHex(cpCard,    cpCardHex);
 
 cpApply.onclick = applyCustom;
 cpReset.onclick = () => {
-  state.palette = "cozy"; state.customColors = null; state.uiTheme = "cozy";
-  clearAccentVars(); applyUITheme("cozy"); buildSwatches(); syncPickerUI();
+  state.palette = "cozy"; state.customColors = null; state.uiTheme = "cozy"; state.taskySub = "mint";
+  clearAccentVars(); applyUITheme("cozy", "mint"); buildSwatches(); syncPickerUI();
   save(); toast("🎨", "Reset to Cozy Brew");
 };
 
@@ -1231,7 +1433,7 @@ cpReset.onclick = () => {
 /* ── Boot ── */
 load();
 initFirebase();
-applyUITheme(state.uiTheme || "cozy");
+applyUITheme(state.uiTheme || "cozy", state.taskySub || "mint");
 if (state.customColors) {
   setAccentVars(state.customColors.accent, state.customColors.accent2, state.customColors.bg, state.customColors.card);
 } else if (state.palette && THEMES[state.palette]) {

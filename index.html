@@ -417,6 +417,8 @@
 
 <div class="toast" id="toast"><span id="toastIcon">🎉</span><span id="toastMsg"></span></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
 const LS = "daydeck.v1";
 const uid = () => Math.random().toString(36).slice(2, 9);
@@ -976,7 +978,5 @@ greet();
 moodPick.querySelector('[data-m="🚀"]').classList.add("sel");
 renderAll();
 </script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </body>
 </html>
